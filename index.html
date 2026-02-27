@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habuild Membership Plans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #046E75;
+      --teal-light: #9BE1E3;
+      --teal-mid: #BEE7E9;
+      --dark: #093035;
+      --font: 'Montserrat', sans-serif;
+    }
+
+    body { font-family: var(--font); background: #fff; }
+
+    /* ── Header ── */
+    .mp-header { text-align: center; padding: 32px 16px 24px; }
+    .mp-header h1 { font-size: clamp(22px, 5vw, 40px); font-weight: 800; color: var(--teal); }
+    .mp-header p  { font-size: clamp(14px, 3vw, 20px); font-weight: 700; color: #3B3A3A; margin-top: 4px; }
+
+    /* ── Spinner ── */
+    .mp-spinner { display: flex; justify-content: center; align-items: center; min-height: 200px; }
+    .mp-spinner::after {
+      content: ''; width: 48px; height: 48px;
+      border: 5px solid var(--teal-mid); border-top-color: var(--teal);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Shared layout ── */
+    .mp-layout { max-width: 900px; margin: 0 auto 32px; padding: 0 12px; }
+
+    /* ════════════════════════════════════════
+       PLAN CARDS — exact copy from reference
+    ════════════════════════════════════════ */
+    .plans-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 16px 0 0 0;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      margin-bottom: 16px;
+    }
+    .plans-row::-webkit-scrollbar { display: none; }
+
+    .plan-card-wrap {
+      min-width: 200px;
+      max-width: 260px;
+      flex: 1 1 256px;
+    }
+
+    .plan-card {
+      border: 1px solid #E5E5E5;
+      border-radius: 8px;
+      padding: 18px;
+      background: #ffffff;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      height: 159px;
+      display: flex;
+      flex-direction: column;
+    }
+    .plan-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-4px); }
+    .plan-card.selected { border: 2px solid #046E75; box-shadow: 0 6px 20px rgba(4,110,117,0.15); }
+
+    .best-seller-badge {
+      background: #046E75;
+      border-radius: 6px 6px 0 0;
+      padding: 4px 12px;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .plan-name { font-weight: 700; font-size: 24px; margin-top: 10px; color: #222; }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px 0;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .original-price { font-size: 14px; text-decoration: line-through; color: #555; white-space: nowrap; }
+
+    .discount-badge {
+      background: #F78F8F;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .plan-card.selected .discount-badge { background: #E23232; }
+
+    .final-price { margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #333; line-height:1.1; }
+    .plan-card.selected .final-price { font-size: 32px; font-weight: 800; color: #046E75; text-decoration: underline; }
+
+    .buy-btn {
+      margin-top: auto;
+      padding-top: 14px;
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #FFA924 0%, #FF8C00 100%);
+      color: #523200;
+      font-weight: 700;
+      font-size: 16px;
+      text-align: center;
+      border-radius: 8px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+    .buy-btn:hover { transform: translateY(-1px); }
+    .plan-card.selected .buy-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100px;
+      width: 200px; height: 100%;
+      background-image: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.45), rgba(255,255,255,0) 70%);
+      animation: shine 3s infinite linear;
+    }
+    @keyframes shine { 0% { left: -100px; } 20% { left: 100%; } 100% { left: 100%; } }
+
+    .selected-check {
+      position: absolute;
+      top: -12px; right: -12px;
+      width: 32px; height: 32px;
+      background: #FFA924;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border: 3px solid #ffffff;
+    }
+    .selected-check::after { content: "✓"; color: #ffffff; font-size: 16px; font-weight: 800; }
+
+    /* Mobile: fixed card width, row scrolls */
+    @media (max-width: 640px) {
+      .plans-row { justify-content: flex-start; }
+      .plan-card-wrap { min-width: 256px; max-width: 256px; flex: 0 0 190px; }
+    }
+
+    /* ════════════════════════════════════════
+       COMPARISON TABLE
+    ════════════════════════════════════════ */
+    .mp-table-wrap { border-top: 2px solid #EBEBEB; border-radius: 12px; overflow: hidden; }
+    .mp-table-inner {
+      background: linear-gradient(180deg, #EBFEFE 0%, rgba(190,231,233,0) 100%);
+      border-radius: 12px;
+      padding: 0 8px 16px;
+    }
+    .mp-table-body { display: flex; }
+
+    .mp-feat-labels { flex: 0 0 38%; min-width: 120px; padding-top: 20px; padding-left: 12px; }
+    .mp-feat-label { border-bottom: 2px solid var(--teal-light); height: 62px; display: flex; align-items: center; padding-right: 8px; }
+    .mp-feat-label .fl-main { font-size: clamp(12px, 1.5vw, 14px); font-weight: 700; color: var(--dark); line-height: 1.3; }
+    .mp-feat-label .fl-sub  { font-size: clamp(12px, 1.3vw, 13px); font-weight: 500; color: var(--dark); }
+
+    .mp-plan-cols { flex: 1; display: flex; padding-top: 4px; }
+    .mp-plan-col  { flex: 1; min-width: 60px; padding: 0 4px; }
+    .mp-plan-col.is-sel {
+      background: linear-gradient(180deg, var(--teal-mid) 0%, rgba(190,231,233,0) 100%);
+      border-radius: 4px 4px 0 0;
+      position: relative; top: -10px; padding-top: 14px;
+    }
+    .mp-col-header {
+      text-align: center; font-size: clamp(12px, 2vw, 20px);
+      font-weight: 700; color: #505050; white-space: nowrap; padding-bottom: 4px; font-family: var(--font);
+    }
+    .mp-plan-col.is-sel .mp-col-header { color: var(--teal); font-weight: 800; }
+    .mp-feat-cell { height: 62px; display: flex; justify-content: center; align-items: center; }
+    .mp-feat-cell svg { display: block; }
+
+    @media (max-width: 640px) {
+      .mp-layout { padding: 0 8px; }
+      .mp-feat-labels { flex: 0 0 36%; min-width: 110px; }
+      .mp-table-inner { overflow-x: auto; }
+      .mp-table-body  { min-width: 480px; }
+    }
+    @media (min-width: 640px) {
+      .mp-feat-labels { padding-left: 32px; }
+      .mp-feat-label .fl-main { font-size: 15px; }
+      .mp-feat-label .fl-sub  { font-size: 14px; }
+      .mp-col-header { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+<div id="habuild-mp">
+  <div class="mp-header">
+    <h1>Membership Plans</h1>
+    <p>Choose your Membership Plan</p>
+  </div>
+  <div id="mp-content"><div class="mp-spinner"></div></div>
+</div>
+
+<script>
+/* ── CONFIG ── */
+const USE_MOCK = false;
+const API_URL  = 'https://payment-service.habuild.in/plan/?status=ACTIVE&type=STANDARD';
+const BUY_BASE = '/buy/';
+const BEST_IDS = [1, 11, 31, 34];
+
+/* ── MOCK DATA (fallback) ── */
+const MOCK = {"success":true,"data":{"1":{"id":1,"name":"12 Months","rank":1,"features":{"features":[{"text":"YOGA EVERYDAY","desc":"with Saurabh Bothra","status":true},{"text":"STRONG EVERYDAY","desc":"with Trishala Bothra","status":true},{"text":"Flexible Batch timings","desc":"","status":true},{"text":"Face Yoga","desc":"","status":true},{"text":"Breathing Exercises","desc":"","status":true},{"text":"Habit Tracking","desc":"","status":true},{"text":"Self Healing Marma","desc":"","status":true},{"text":"Hand Mudras","desc":"","status":true},{"text":"Mindful Journaling","desc":"","status":true},{"text":"Physiotherapy Consultation","desc":"","status":true},{"text":"Water Reminders","desc":"","status":true},{"text":"Community Sessions","desc":"","status":true}]},"regions":{"IND":{"amount":399900,"discounted_amount":12000,"currency":"INR"},"USA":{"amount":9900,"discounted_amount":300,"currency":"USD"}}},"2":{"id":2,"name":"6 Months","rank":2,"features":{"features":[{"text":"YOGA EVERYDAY","desc":"with Saurabh Bothra","status":true},{"text":"STRONG EVERYDAY","desc":"with Trishala Bothra","status":true},{"text":"Flexible Batch timings","desc":"","status":true},{"text":"Face Yoga","desc":"","status":true},{"text":"Breathing Exercises","desc":"","status":true},{"text":"Habit Tracking","desc":"","status":true},{"text":"Self Healing Marma","desc":"","status":false},{"text":"Hand Mudras","desc":"","status":false},{"text":"Mindful Journaling","desc":"","status":true},{"text":"Physiotherapy Consultation","desc":"","status":true},{"text":"Water Reminders","desc":"","status":true},{"text":"Community Sessions","desc":"","status":true}]},"regions":{"IND":{"amount":299900,"discounted_amount":6000,"currency":"INR"},"USA":{"amount":5900,"discounted_amount":118,"currency":"USD"}}},"3":{"id":3,"name":"3 Months","rank":3,"features":{"features":[{"text":"YOGA EVERYDAY","desc":"with Saurabh Bothra","status":true},{"text":"STRONG EVERYDAY","desc":"with Trishala Bothra","status":true},{"text":"Flexible Batch timings","desc":"","status":true},{"text":"Face Yoga","desc":"","status":true},{"text":"Breathing Exercises","desc":"","status":true},{"text":"Habit Tracking","desc":"","status":true},{"text":"Self Healing Marma","desc":"","status":false},{"text":"Hand Mudras","desc":"","status":false},{"text":"Mindful Journaling","desc":"","status":false},{"text":"Physiotherapy Consultation","desc":"","status":true},{"text":"Water Reminders","desc":"","status":true},{"text":"Community Sessions","desc":"","status":true}]},"regions":{"IND":{"amount":199900,"discounted_amount":3000,"currency":"INR"},"USA":{"amount":3900,"discounted_amount":59,"currency":"USD"}}},"is_international":false,"country":"IND"}};
+
+/* ── STATE ── */
+let plans = [], selId = null;
+
+/* ── PARSE ── */
+async function loadPlans() {
+  let resp;
+  if (USE_MOCK) {
+    resp = MOCK;
+  } else {
+    const res = await fetch("https://payment-service.habuild.in/plan/?status=ACTIVE&type=STANDARD");
+    resp = await res.json();
+  }
+  if (!resp.success) throw new Error('API error');
+  const data = resp.data;
+  const isInternational = data.is_international;
+  const country = data.country;
+
+  plans = Object.entries(data)
+    .filter(([key]) => !isNaN(key))
+    .map(([, plan]) => {
+      const regionKey = isInternational ? 'USA' : (country || 'IND');
+      const region = plan.regions[regionKey] || plan.regions['IND'];
+      const amount = region.amount / 100;
+      const original = region.discounted_amount;
+      const disc = original > 0 ? Math.round(((original - amount) / original) * 100) : 0;
+      return {
+        id: plan.id, name: plan.name, rank: plan.rank,
+        currency: region.currency, amount, original, disc,
+        isBest: BEST_IDS.includes(plan.id),
+        features: plan.features.features.map(f => ({ text: f.text, desc: f.desc, status: f.status })),
+      };
+    })
+    .sort((a, b) => a.rank - b.rank);
+
+  selId = plans[0]?.id ?? null;
+}
+
+/* ── TABLE ICONS ── */
+const CHK = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+const CRS = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+/* ── RENDER CARDS ── */
+function renderCards() {
+  return `<div class="plans-row">${plans.map(p => {
+    const s = p.id === selId;
+    return `
+    <div class="plan-card-wrap">
+      <div class="plan-card${s ? ' selected' : ''}" onclick="pick(${p.id})">
+        ${p.isBest ? `<div class="best-seller-badge">⭐ BEST SELLER</div>` : ''}
+        ${s ? `<div class="selected-check"></div>` : ''}
+        <div class="plan-name">${p.name}</div>
+        <div class="price-row">
+          <span class="original-price">${p.currency} ${p.original}/-</span>
+          <span class="discount-badge">-${p.disc}% OFF</span>
+        </div>
+        <div class="final-price">${p.currency} ${p.amount}</div>
+        <a href="${BUY_BASE}${p.id}?referrer=membershipplan" class="buy-btn">Buy Now</a>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+/* ── RENDER TABLE ── */
+function renderTable() {
+  const labels = plans[0]?.features ?? [];
+  const labHtml = labels.map(f => `
+    <div class="mp-feat-label"><div>
+      <p class="fl-main">${f.text}</p>
+      ${f.desc ? `<p class="fl-sub">${f.desc}</p>` : ''}
+    </div></div>`).join('');
+
+  const colHtml = plans.map(p => {
+    const s = p.id === selId;
+    return `
+    <div class="mp-plan-col${s ? ' is-sel' : ''}">
+      <p class="mp-col-header">${p.name}</p>
+      ${p.features.map(f => `<div class="mp-feat-cell">${f.status ? CHK : CRS}</div>`).join('')}
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="mp-table-wrap"><div class="mp-table-inner"><div class="mp-table-body">
+    <div class="mp-feat-labels">${labHtml}</div>
+    <div class="mp-plan-cols">${colHtml}</div>
+  </div></div></div>`;
+}
+
+/* ── RENDER ── */
+function render() {
+  document.getElementById('mp-content').innerHTML = `
+    <div class="mp-layout">
+      ${renderCards()}
+      ${renderTable()}
+    </div>`;
+}
+
+/* ── SELECT ── */
+function pick(id) { selId = id; render(); }
+
+/* ── INIT ── */
+(async () => {
+  try { await loadPlans(); render(); }
+  catch (e) {
+    document.getElementById('mp-content').innerHTML =
+      '<p style="text-align:center;color:#999;padding:40px">Failed to load plans.</p>';
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>
