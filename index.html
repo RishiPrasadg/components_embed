@@ -66,7 +66,7 @@
       position: relative;
       cursor: pointer;
       transition: all 0.25s ease;
-      height: 159px;
+      height: 200px;
       display: flex;
       flex-direction: column;
     }
@@ -118,7 +118,7 @@
       padding-top: 14px;
       display: block;
       width: 100%;
-      padding: 12px;
+      padding: 8px;
       background: linear-gradient(135deg, #FFA924 0%, #FF8C00 100%);
       color: #523200;
       font-weight: 700;
@@ -220,7 +220,7 @@
 /* ── CONFIG ── */
 const USE_MOCK = false;
 const API_URL  = 'https://payment-service.habuild.in/plan/?status=ACTIVE&type=STANDARD';
-const BUY_BASE = '/buy/';
+const BUY_BASE = 'https://rishiprasadg.github.io/components_embed/payment.html?planId=';
 const BEST_IDS = [1, 11, 31, 34];
 
 /* ── MOCK DATA (fallback) ── */
@@ -282,7 +282,7 @@ function renderCards() {
           <span class="discount-badge">-${p.disc}% OFF</span>
         </div>
         <div class="final-price">${p.currency} ${p.amount}</div>
-        <a href="${BUY_BASE}${p.id}?referrer=membershipplan" class="buy-btn">Buy Now</a>
+        <a href="${BUY_BASE}${p.id}" class="buy-btn">Buy Now</a>
       </div>
     </div>`;
   }).join('')}</div>`;
