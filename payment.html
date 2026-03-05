@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -138,7 +138,7 @@ label { font-weight: 600; font-size: 14px; }
 
 <div class="main-wrapper">
 
-  <!-- LEFT -->
+  
   <div class="left-section">
 
     <div class="plan-card">
@@ -167,7 +167,7 @@ label { font-weight: 600; font-size: 14px; }
 
   </div>
 
-  <!-- RIGHT -->
+ 
   <div class="right-section">
 
     <div class="payment-card">
@@ -317,4 +317,416 @@ loadPaymentPage();
 </script>
 
 </body>
-</html>s
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Yoga Everyday - Membership</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/css/intlTelInput.css"/>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+
+body{
+background:linear-gradient(to bottom,rgba(221,244,255,0.5),rgba(161,217,205,0.5))
+}
+
+.back-wrapper{padding:20px 40px;cursor:pointer;font-size:26px}
+
+.page-title{text-align:center;margin-top:10px}
+.page-title h1{font-size:48px;font-weight:600}
+.page-title span{display:block;color:#046E75;font-weight:800}
+
+.main-wrapper{
+display:flex;
+justify-content:center;
+gap:60px;
+padding:40px;
+flex-wrap:wrap
+}
+
+.left-section,.right-section{width:420px}
+
+.plan-card{
+background:#fff;
+border-radius:10px;
+padding:20px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1)
+}
+
+.plan-top{display:flex;gap:20px;align-items:center}
+.plan-top img{width:130px}
+
+.plan-info h2{font-size:36px;font-weight:800}
+
+.strike{text-decoration:line-through;color:#464646;font-weight:600}
+
+.discount{
+background:#E23232;
+color:#fff;
+padding:4px 12px;
+border-radius:20px;
+font-size:14px;
+margin-left:10px
+}
+
+.price{
+font-size:48px;
+font-weight:800;
+color:#046E75;
+margin-top:10px
+}
+
+.feature-box{
+background:#fff;
+margin-top:20px;
+border-radius:10px;
+padding:20px
+}
+
+.feature-box p{margin-bottom:10px;color:#565656;font-weight:500}
+
+.payment-card{
+background:#fff;
+padding:20px;
+border-radius:10px
+}
+
+label{font-weight:600;font-size:14px}
+
+.phone-wrapper{
+border:2px solid #AAAAAA;
+border-radius:8px;
+padding:10px;
+margin-top:6px
+}
+
+.pay-btn{
+margin-top:15px;
+width:100%;
+padding:12px;
+background:#0F4B80;
+color:white;
+border:none;
+border-radius:10px;
+font-size:18px;
+cursor:pointer
+}
+
+.pay-btn:disabled{opacity:0.6}
+
+.powered{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+margin-top:15px;
+font-weight:600;
+color:#666
+}
+
+#extraFields{
+margin-top:12px;
+display:flex;
+flex-direction:column;
+gap:10px
+}
+
+#extraFields input{
+padding:10px;
+border:2px solid #AAAAAA;
+border-radius:8px;
+font-size:14px
+}
+
+.phone-wrapper input{
+border:none !important;
+outline:none !important;
+width:100%;
+font-size:16px;
+background:transparent;
+}
+
+.iti{
+width:100%;
+}
+
+.iti input{
+border:none !important;
+outline:none !important;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="back-wrapper" onclick="window.history.back()">←</div>
+
+<div class="page-title">
+<h1>
+Yoga Everyday
+<span id="membershipDuration"></span>
+</h1>
+</div>
+
+<div class="main-wrapper">
+
+<div class="left-section">
+
+<div class="plan-card">
+
+<div class="plan-top">
+
+<img src="https://assets.habit.yoga/habuildassets/SB_PAYMENT.webp">
+
+<div class="plan-info">
+
+<h2 id="planName"></h2>
+
+<div>
+<span class="strike" id="originalPrice"></span>
+<span class="discount" id="discountBadge"></span>
+</div>
+
+<div class="price" id="finalPrice"></div>
+
+</div>
+</div>
+</div>
+
+<div class="feature-box">
+
+<p id="planDescription"></p>
+
+<div id="featureList"></div>
+
+<br>
+
+<strong>Contact Us:</strong><br>
+yogaeveryday@habuild.in<br>
++91 712-6924545
+
+</div>
+
+</div>
+
+<div class="right-section">
+
+<div class="payment-card">
+
+<h3>Please fill in the below information</h3>
+
+<form id="paymentForm">
+
+<label>WhatsApp Number *</label>
+
+<div class="phone-wrapper">
+<input type="tel" id="phone" required>
+</div>
+
+<div id="extraFields" style="display:none;">
+
+<label>Name *</label>
+<input type="text" id="name" placeholder="Please Enter Your Name">
+
+<label>Email (Optional)</label>
+<input type="email" id="email" placeholder="Please Enter Your Email">
+
+</div>
+
+<button type="submit" class="pay-btn" id="payButton" disabled>
+Loading...
+</button>
+
+</form>
+
+<div class="powered">
+
+Powered By
+<img src="https://assets.habit.yoga/habuildassets/HDFC_Bank_Logo.svg" width="120">
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/intlTelInput.min.js"></script>
+
+<script>
+
+let selectedPlan=null
+let currentRegion="IND"
+let currentAmount=0
+
+function getPlanId(){
+const params=new URLSearchParams(window.location.search)
+return params.get("planId")
+}
+
+async function loadPaymentPage(){
+
+const planId=getPlanId()
+
+const res=await fetch(`https://payment-service.habuild.in/plan/${planId}`)
+const resp=await res.json()
+
+selectedPlan=resp.data
+
+renderPlan()
+
+}
+
+function renderPlan(){
+
+const region=currentRegion==="IND"
+?selectedPlan.regions.IND
+:selectedPlan.regions.USA
+
+const amount=region.amount/100
+currentAmount=amount
+
+const original=region.discounted_amount
+
+const discount=original>0
+?Math.round(((original-amount)/original)*100)
+:0
+
+const symbol=currentRegion==="IND"?"₹":"USD"
+
+document.title=`Yoga Everyday - ${selectedPlan.name} Membership`
+
+document.getElementById("membershipDuration").innerText=`${selectedPlan.name} Membership`
+
+document.getElementById("planName").innerText=selectedPlan.name
+
+document.getElementById("originalPrice").innerText=`${symbol} ${original}/-`
+
+document.getElementById("discountBadge").innerText=`-${discount}% Off`
+
+document.getElementById("finalPrice").innerText=`${symbol} ${amount}/-`
+
+document.getElementById("payButton").innerText=`Click here to pay ${symbol} ${amount}`
+
+document.getElementById("payButton").disabled=false
+
+document.getElementById("planDescription").innerHTML=
+`You've selected the <strong>${selectedPlan.name} Plan</strong>`
+
+const featuresHTML=selectedPlan.features.features
+.filter(f=>f.status)
+.map(f=>`<p>✅ ${f.text}</p>`)
+.join("")
+
+document.getElementById("featureList").innerHTML=featuresHTML
+
+}
+
+const phoneInput=document.querySelector("#phone")
+
+const iti=window.intlTelInput(phoneInput,{
+initialCountry:"in",
+separateDialCode:true
+})
+
+phoneInput.addEventListener("input",function(){
+
+if(phoneInput.value.replace(/\D/g,'').length >= 10){
+document.getElementById("extraFields").style.display="flex"
+}else{
+document.getElementById("extraFields").style.display="none"
+}
+
+})
+
+phoneInput.addEventListener("countrychange",function(){
+
+const country=iti.getSelectedCountryData().iso2
+
+if(country==="in"){
+currentRegion="IND"
+}else{
+currentRegion="USA"
+}
+
+renderPlan()
+
+})
+
+document.getElementById("paymentForm").addEventListener("submit",function(e){
+
+e.preventDefault()
+
+const phone = iti.getNumber();
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+
+if(phone.length < 10){
+alert("Enter valid phone number");
+return;
+}
+
+if(!name){
+alert("Please enter your name");
+return;
+}
+
+const options={
+
+key:"YOUR_RAZORPAY_KEY",
+
+amount:currentAmount*100,
+
+currency:currentRegion==="IND"?"INR":"USD",
+
+name:"Habuild Yoga",
+
+description:"Yoga Everyday Membership",
+
+image:"https://assets.habit.yoga/habuildassets/SB_PAYMENT.webp",
+
+handler:function(response){
+
+alert("Payment Successful! Payment ID: "+response.razorpay_payment_id)
+
+},
+
+prefill:{
+name:name,
+email:email,
+contact:phone
+},
+
+theme:{
+color:"#0F4B80"
+}
+
+}
+
+const rzp=new Razorpay(options)
+
+rzp.open()
+
+})
+
+loadPaymentPage()
+
+</script>
+
+</body>
+</html>
